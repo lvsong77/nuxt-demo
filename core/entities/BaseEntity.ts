@@ -59,13 +59,10 @@ export abstract class BaseEntity {
 
   /**
    * 从序列化数据恢复实体
+   * 注意：这是一个基础实现，子类应该重写此方法以正确处理自己的数据结构
    */
-  public static deserialize<T extends BaseEntity>(
-    this: new (id: string, name: string, description?: string) => T,
-    data: Record<string, any>
-  ): T {
-    const entity = new this(data.id, data.name, data.description);
-    entity.updatedAt = new Date(data.updatedAt);
-    return entity;
+  public static deserialize(data: Record<string, any>): BaseEntity {
+    // 这是一个基础实现，子类应该重写
+    throw new Error("BaseEntity.deserialize() 应该被子类重写");
   }
 }
