@@ -1,8 +1,16 @@
 class SaveManager {
-  private static instance: SaveManager;
+  saveData: string;
 
   constructor() {
-    console.log("SaveManager initialized");
+    this.saveData = "";
+  }
+
+  getSaveData() {
+    return this.saveData;
+  }
+
+  setSaveData(data: string) {
+    this.saveData = data;
   }
 }
 

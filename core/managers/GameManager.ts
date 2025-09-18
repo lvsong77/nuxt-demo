@@ -1,7 +1,7 @@
 import { SaveManager } from "./SaveManager";
 
 class GameManager {
-  private saveManager: SaveManager;
+  saveManager: SaveManager;
 
   constructor() {
     this.saveManager = new SaveManager();
@@ -13,4 +13,8 @@ class GameManager {
   }
 }
 
+type GameManagerType = GameManager;
+
 export { GameManager };
+export type { GameManagerType };
+

@@ -6,9 +6,14 @@
 </template>
 
 <script setup lang="ts">
-import { GameManager } from "~~/core/managers/GameManager";
+// import { GameManager } from "~~/core/managers/GameManager";
+import { useGame } from "~/stores/game";
 
-const gameManager = new GameManager();
+// const gameManager = new GameManager();
 
-window.gameManager = gameManager;
+const game = useGame();
+
+onMounted(() => {
+  game.getSaveData();
+});
 </script>
