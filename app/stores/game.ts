@@ -1,50 +1,18 @@
-// import type { GameManagerType } from "~/core/managers/GameManager";
+import { GameManager } from "~~/core/managers/GameManager";
+import type { GameManagerType } from "~~/core/managers/GameManager";
 
-export const useGame = defineStore('game', {
+export const useGame = defineStore("game", {
   state: () => ({
-    // gameManager: null as GameManagerType | null,
-    characters: [] as any[],
-    currentCharacterId: "",
-    currentSceneId: "",
-    currentActionId: "",
+    gameManager: null as unknown as GameManagerType,
   }),
   actions: {
-    setSaveData() {
-      const saveData = {
-        characters: this.characters,
-        currentCharacterId: this.currentCharacterId,
-        currentSceneId: this.currentSceneId,
-        currentActionId: this.currentActionId,
-      }
-      localStorage.setItem('saveData', JSON.stringify(saveData));
+    initGameManager() {
+      this.gameManager = new GameManager();
     },
-    getSaveData() {
-      const saveData = JSON.parse(localStorage.getItem('saveData') || '{}');
-      this.characters = saveData.characters || [];
-      this.currentCharacterId = saveData.currentCharacterId || "";
-      this.currentSceneId = saveData.currentSceneId || "";
-      this.currentActionId = saveData.currentActionId || "";
-    },
-    createCharacter(character: any) {
-      const id = Date.now().toString();
-      this.characters.push({
-        ...character,
-        id,
-      });
-      return id
-    },
-    selectCharacter(id: string) {
-      this.currentCharacterId = id;
-    }
   },
-  getters: {
-    getCharacters: (state) => state.characters,
-    getCurrentCharacterId: (state) => state.currentCharacterId,
-    getCurrentSceneId: (state) => state.currentSceneId,
-    getCurrentActionId: (state) => state.currentActionId,
-  },
-})
+  getters: {},
+});
 
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useGame, import.meta.hot))
+  import.meta.hot.accept(acceptHMRUpdate(useGame, import.meta.hot));
 }

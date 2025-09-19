@@ -6,14 +6,16 @@
 </template>
 
 <script setup lang="ts">
-// import { GameManager } from "~~/core/managers/GameManager";
 import { useGame } from "~/stores/game";
 
-// const gameManager = new GameManager();
+const initGameManager = () => {
+  const game = useGame();
+  if (import.meta.client) {
+    game.initGameManager();
+  }
+};
 
-const game = useGame();
-
-onMounted(() => {
-  game.getSaveData();
+onBeforeMount(() => {
+  initGameManager();
 });
 </script>
