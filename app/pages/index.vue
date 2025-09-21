@@ -1,7 +1,7 @@
 <template>
-  <!-- <div v-if="characters.length > 0">
+  <div v-if="gameManager.characters.length > 0">
     <div
-      v-for="character in characters"
+      v-for="character in gameManager.characters"
       :key="character.id"
     >
       {{ character.name }}
@@ -12,10 +12,7 @@
       <h1>No characters found</h1>
       <UButton @click="createCharacter">Create Character</UButton>
     </div>
-  </div> -->
-  <div>{{ gameManager.getLevel() }}</div>
-  <div>{{ gameManager.level }}</div>
-  <UButton @click="gameManager.setLevel(gameManager.getLevel() + 1)">Level Up</UButton>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -24,10 +21,12 @@ import { storeToRefs } from "pinia";
 
 const { gameManager } = storeToRefs(useGame());
 
-let a = gameManager.value.getLevel();
-console.log(a);
-
 const createCharacter = () => {
   navigateTo("/CharacterCreate");
 };
+
+onMounted(() => {
+
+
+})
 </script>

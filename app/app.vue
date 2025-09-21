@@ -2,6 +2,7 @@
   <UApp>
     <NuxtRouteAnnouncer />
     <NuxtPage />
+    <UButton @click="save">save</UButton>
   </UApp>
 </template>
 
@@ -13,6 +14,11 @@ const initGameManager = () => {
   if (import.meta.client) {
     game.initGameManager();
   }
+};
+
+const save = () => {
+  const game = useGame();
+  game.saveData();
 };
 
 onBeforeMount(() => {

@@ -14,9 +14,10 @@
 </template>
 
 <script setup lang="ts">
-import { useGame } from '~/stores/game';
+import { useGame } from "~/stores/game";
+import { storeToRefs } from "pinia";
 
-const { createCharacter, selectCharacter } = useGame();
+const { gameManager } = storeToRefs(useGame());
 
 const newCharacter = ref({
   name: "",
@@ -29,8 +30,7 @@ const genderItems = [
 ];
 
 const confirm = () => {
-  const newCharacterId = createCharacter(newCharacter.value);
-  selectCharacter(newCharacterId);
+  gameManager.value.createCharacter(newCharacter.value);
 };
 
 </script>

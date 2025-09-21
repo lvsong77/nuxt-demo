@@ -8,7 +8,13 @@ export const useGame = defineStore("game", {
   actions: {
     initGameManager() {
       this.gameManager = new GameManager();
+      console.log("🚀 ~ initGameManager ~ this.gameManager:", this.gameManager)
+      this.gameManager.load(localStorage.getItem('idle_game') ?? '{}');
     },
+    saveData() {
+      const saveData = this.gameManager.save();
+      localStorage.setItem('idle_game', saveData);
+    }
   },
   getters: {},
 });
