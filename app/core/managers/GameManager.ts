@@ -1,5 +1,5 @@
-import { SaveManager } from "./SaveManager";
-import { Character } from "~~/core/entities/creatures/Character";
+import { gameDB } from "~/core/database/GameDB";
+import { Character } from "~/core/entities/creatures/Character";
 
 interface SaveData {
   characters: Character[];
@@ -9,13 +9,20 @@ class GameManager {
   _characters: Character[];
   _currentCharacterId: string;
 
+  // 缓存
+  private characterCache = new Map<string, Character>();
+
   constructor() {
     this._characters = [];
-    this._currentCharacterId = '';
+    this._currentCharacterId = "";
     this.initialize();
   }
 
-  private initialize() {
+  private async initialize() {
+    // 从数据库加载元数据
+    const metadata = await gameDB.metadata.get("currentCharacterId");
+    this._currentCharacterId = metadata?.value || "";
+
     console.log("GameManager initialized");
   }
 
@@ -34,21 +41,21 @@ class GameManager {
     };
     return JSON.stringify(saveData);
   }
-  
+
   load(data: string) {
     const parsedData = JSON.parse(data) as SaveData;
-    this._characters = parsedData.characters ?? [];
-    this._currentCharacterId = parsedData.currentCharacterId ?? '';
+
+    this._characters = (parsedData.characters ?? []).map((character) =>
+      Character.fromJSON(character)
+    );
+    this._currentCharacterId = parsedData.currentCharacterId ?? "";
   }
 
-  createCharacter(data: {
-    name: string;
-    gender: string;
-  }) {
+  createCharacter(data: { name: string; gender: string }) {
     const character = new Character({
       name: data.name,
       gender: data.gender,
-      description: '',
+      description: "",
     });
     this._characters.push(character);
     this.selectCharacter(character.id);
@@ -56,6 +63,15 @@ class GameManager {
 
   selectCharacter(characterId: string) {
     this._currentCharacterId = characterId;
+  }
+
+  async getCharacterList() {
+    return await gameDB.characters.each((character) => {
+      return {
+        id: character.id,
+        name: character.name,
+      };
+    });
   }
 }
 

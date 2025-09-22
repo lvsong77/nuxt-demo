@@ -1,5 +1,5 @@
-import { GameManager } from "~~/core/managers/GameManager";
-import type { GameManagerType } from "~~/core/managers/GameManager";
+import { GameManager } from "~/core/managers/GameManager";
+import type { GameManagerType } from "~/core/managers/GameManager";
 
 export const useGame = defineStore("game", {
   state: () => ({
@@ -8,13 +8,15 @@ export const useGame = defineStore("game", {
   actions: {
     initGameManager() {
       this.gameManager = new GameManager();
-      console.log("🚀 ~ initGameManager ~ this.gameManager:", this.gameManager)
-      this.gameManager.load(localStorage.getItem('idle_game') ?? '{}');
+      console.log("🚀 ~ initGameManager ~ this.gameManager:", this.gameManager);
+      this.gameManager.load(localStorage.getItem("idle_game") ?? "{}");
+
+      window.gameManager = this.gameManager;
     },
     saveData() {
       const saveData = this.gameManager.save();
-      localStorage.setItem('idle_game', saveData);
-    }
+      localStorage.setItem("idle_game", saveData);
+    },
   },
   getters: {},
 });

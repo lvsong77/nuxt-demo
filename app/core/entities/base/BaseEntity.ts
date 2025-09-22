@@ -10,12 +10,24 @@ export abstract class BaseEntity {
   _createdAt: Date;
   _updatedAt: Date;
 
-  constructor(id: string, name: string, description: string = "") {
+  constructor({
+    id,
+    name,
+    description,
+    createdAt,
+    updatedAt,
+  }: {
+    id: string;
+    name: string;
+    description: string;
+    createdAt: Date;
+    updatedAt: Date;
+  }) {
     this._id = id;
     this._name = name;
     this._description = description;
-    this._createdAt = new Date();
-    this._updatedAt = new Date();
+    this._createdAt = createdAt;
+    this._updatedAt = updatedAt;
   }
 
   get id() {
@@ -25,17 +37,17 @@ export abstract class BaseEntity {
   get name() {
     return this._name;
   }
-  
+
   toJSON(): any {
     return {
       id: this._id,
       name: this._name,
       description: this._description,
       createdAt: this._createdAt,
-      updatedAt: this._updatedAt
+      updatedAt: this._updatedAt,
     };
   }
-  
+
   static fromJSON(data: any): BaseEntity {
     throw new Error("fromJSON 方法需要在子类中实现");
   }

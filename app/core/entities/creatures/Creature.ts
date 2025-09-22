@@ -8,13 +8,23 @@ export abstract class Creature extends BaseEntity {
     name,
     description,
     gender,
+    createdAt,
+    updatedAt,
   }: {
     id: string;
     name: string;
     description: string;
     gender: string;
+    createdAt: Date;
+    updatedAt: Date;
   }) {
-    super(id, name, description);
+    super({
+      id,
+      name,
+      description,
+      createdAt,
+      updatedAt,
+    });
     this._gender = gender;
   }
 

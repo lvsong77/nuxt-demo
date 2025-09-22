@@ -1,9 +1,6 @@
 <template>
   <div v-if="gameManager.characters.length > 0">
-    <div
-      v-for="character in gameManager.characters"
-      :key="character.id"
-    >
+    <div v-for="character in gameManager.characters" :key="character.id">
       {{ character.name }}
     </div>
   </div>
@@ -21,12 +18,14 @@ import { storeToRefs } from "pinia";
 
 const { gameManager } = storeToRefs(useGame());
 
+const characters = ref([]);
+
 const createCharacter = () => {
   navigateTo("/CharacterCreate");
 };
 
-onMounted(() => {
-
-
-})
+onMounted(async () => {
+  characters.value = await gameManager.value.getCharacterList();
+  console.log("🚀 ~ characters.value:", characters.value);
+});
 </script>
