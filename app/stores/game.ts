@@ -1,9 +1,8 @@
-import { GameManager } from "~/core/managers/GameManager";
-import type { GameManagerType } from "~/core/managers/GameManager";
+import { GameManager } from "~~/core/managers/GameManager";
 
 export const useGame = defineStore("game", {
   state: () => ({
-    gameManager: null as unknown as GameManagerType,
+    gameManager: null as unknown as GameManager,
   }),
   actions: {
     initGameManager() {

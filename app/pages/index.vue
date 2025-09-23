@@ -1,6 +1,9 @@
 <template>
-  <div v-if="gameManager.characters.length > 0">
-    <div v-for="character in gameManager.characters" :key="character.id">
+  <div v-if="loading">
+    <div>Loading...</div>
+  </div>
+  <div v-else-if="characters.length > 0">
+    <div v-for="character in characters" :key="character.id">
       {{ character.name }}
     </div>
   </div>
@@ -13,19 +16,25 @@
 </template>
 
 <script setup lang="ts">
-import { useGame } from "~/stores/game";
-import { storeToRefs } from "pinia";
+import { useGameAsync } from "~/composables/useGame";
+import type { Character } from "~~/core/entities/creatures/Character";
 
-const { gameManager } = storeToRefs(useGame());
-
-const characters = ref([]);
+const characters = ref<Character[]>([]);
+const loading = ref(true);
 
 const createCharacter = () => {
   navigateTo("/CharacterCreate");
 };
 
 onMounted(async () => {
-  characters.value = await gameManager.value.getCharacterList();
-  console.log("🚀 ~ characters.value:", characters.value);
+  try {
+    const gameManager = await useGameAsync();
+    characters.value = await gameManager.getCharacterList(); // 你需要实现这个方法
+    console.log("🚀 ~ characters.value:", characters.value);
+  } catch (error) {
+    console.error("Failed to load characters:", error);
+  } finally {
+    loading.value = false;
+  }
 });
 </script>
