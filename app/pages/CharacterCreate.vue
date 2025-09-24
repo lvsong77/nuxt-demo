@@ -7,11 +7,7 @@
 </template>
 
 <script setup lang="ts">
-// import { useGame } from "~/stores/game";
-// import { storeToRefs } from "pinia";
 import { useGameAsync } from "~/composables/useGame";
-
-// const { gameManager } = storeToRefs(useGame());
 
 const newCharacter = ref({
   name: "",
@@ -24,7 +20,6 @@ const genderItems = [
 ];
 
 const confirm = async () => {
-  // gameManager.value.createCharacter(newCharacter.value);
   const gameManager = await useGameAsync();
   await gameManager.createCharacter(newCharacter.value);
 };

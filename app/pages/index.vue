@@ -3,7 +3,11 @@
     <div>Loading...</div>
   </div>
   <div v-else-if="characters.length > 0">
-    <div v-for="character in characters" :key="character.id">
+    <div
+      v-for="character in characters"
+      :key="character.id"
+      @click="selectCharacter(character.id)"
+    >
       {{ character.name }}
     </div>
   </div>
@@ -21,6 +25,12 @@ import type { Character } from "~~/core/entities/creatures/Character";
 
 const characters = ref<Character[]>([]);
 const loading = ref(true);
+
+const selectCharacter = async (id: string) => {
+  const gameManager = await useGameAsync();
+  await gameManager.selectCharacter(id);
+  navigateTo(`/home`);
+};
 
 const createCharacter = () => {
   navigateTo("/CharacterCreate");

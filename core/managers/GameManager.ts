@@ -2,7 +2,6 @@ import type { IGameStorage } from "../interfaces/IGameStorage";
 import { Character } from "../entities/creatures/Character";
 
 export class GameManager {
-  private characterCache = new Map<string, Character>();
   private _currentCharacterId = "";
   private _initialized = false;
   private _initPromise: Promise<void>;
@@ -25,24 +24,22 @@ export class GameManager {
     return this._initialized;
   }
 
+  get currentCharacterId(): string {
+    return this._currentCharacterId;
+  }
+
   async getCharacterList(): Promise<Character[]> {
     await this.waitForInitialization();
 
-    // LVTODO: 这里不应该从cache中获取，待修改
-    return Array.from(this.characterCache.values());
+    return await this.storage.getAllCharacterSummaries();
   }
 
   async getCharacter(id: string): Promise<Character | null> {
     await this.waitForInitialization();
 
-    if (this.characterCache.has(id)) {
-      return this.characterCache.get(id)!;
-    }
-
     const data = await this.storage.getCharacter(id);
     if (data) {
       const character = Character.fromJSON(data);
-      this.characterCache.set(id, character);
       return character;
     }
 
@@ -62,7 +59,6 @@ export class GameManager {
     });
 
     await this.storage.saveCharacter(character.toJSON());
-    this.characterCache.set(character.id, character);
     await this.selectCharacter(character.id);
 
     return character;

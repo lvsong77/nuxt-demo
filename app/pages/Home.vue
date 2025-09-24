@@ -1,36 +1,14 @@
 <template>
-  <div>
-    <UInput
-      v-model="newCharacter.name"
-      placeholder="输入角色名称"
-    />
-    <USelect
-      v-model="newCharacter.gender"
-      :items="genderItems"
-      placeholder="选择性别"
-    />
-    <UButton @click="confirm">Create Character</UButton>
-  </div>
+  <div>currentCharacter: {{ currentCharacterId }}</div>
 </template>
 
 <script setup lang="ts">
-import { useGame } from '~/stores/game';
+import { useGameAsync } from "~/composables/useGame";
 
-const { createCharacter, selectCharacter } = useGame();
+const currentCharacterId = ref("");
 
-const newCharacter = ref({
-  name: "",
-  gender: "",
+onMounted(async () => {
+  const gameManager = await useGameAsync();
+  currentCharacterId.value = gameManager.currentCharacterId;
 });
-
-const genderItems = [
-  { label: "男", value: "male" },
-  { label: "女", value: "female" },
-];
-
-const confirm = () => {
-  const newCharacterId = createCharacter(newCharacter.value);
-  selectCharacter(newCharacterId);
-};
-
 </script>
