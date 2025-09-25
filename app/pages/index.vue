@@ -1,50 +1,94 @@
 <template>
-  <div v-if="loading">
-    <div>Loading...</div>
-  </div>
-  <div v-else-if="characters.length > 0">
-    <div
-      v-for="character in characters"
-      :key="character.id"
-      @click="selectCharacter(character.id)"
-    >
-      {{ character.name }}
+  <div class="app-entry">
+    <!-- 加载状态 -->
+    <div v-if="loading" class="loading-screen">
+      <div class="loading-spinner"></div>
+      <p>正在检查登录状态...</p>
     </div>
-  </div>
-  <div v-else>
-    <div>
-      <h1>No characters found</h1>
-      <UButton @click="createCharacter">Create Character</UButton>
+
+    <!-- 根据状态显示不同内容 -->
+    <div v-else>
+      <!-- 状态会自动处理跳转，这里主要是加载状态 -->
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useGameAsync } from "~/composables/useGame";
-import type { Character } from "~~/core/entities/creatures/Character";
-
-const characters = ref<Character[]>([]);
+// 状态检查和路由逻辑
 const loading = ref(true);
-
-const selectCharacter = async (id: string) => {
-  const gameManager = await useGameAsync();
-  await gameManager.selectCharacter(id);
-  navigateTo(`/home`);
-};
-
-const createCharacter = () => {
-  navigateTo("/CharacterCreate");
-};
 
 onMounted(async () => {
   try {
+    // 1. 检查用户登录状态
+    const isLoggedIn = await checkUserAuth();
+
+    if (!isLoggedIn) {
+      // 未登录 -> 跳转到登录页
+      navigateTo("/login");
+      return;
+    }
+
+    // 2. 检查游戏角色状态
     const gameManager = await useGameAsync();
-    characters.value = await gameManager.getCharacterList(); // 你需要实现这个方法
-    console.log("🚀 ~ characters.value:", characters.value);
+    const characters = await gameManager.getCharacterList();
+
+    if (characters.length === 0) {
+      // 已登录但无角色 -> 跳转到角色创建
+      navigateTo("/game/character/create");
+      return;
+    }
+
+    // 3. 检查是否有选中的角色
+    const currentCharacterId = gameManager.currentCharacterId;
+
+    if (!currentCharacterId) {
+      // 有角色但未选中 -> 显示角色选择界面
+      await showCharacterSelection(characters);
+      return;
+    }
+
+    // 4. 一切就绪 -> 直接进入游戏
+    navigateTo("/game");
   } catch (error) {
-    console.error("Failed to load characters:", error);
+    console.error("App initialization failed:", error);
+    // 出错时跳转到登录页
+    navigateTo("/login");
   } finally {
     loading.value = false;
   }
 });
+
+// 检查用户认证状态
+const checkUserAuth = async (): Promise<boolean> => {
+  // 这里实现你的认证逻辑
+  // 可能是检查 token、cookie 或其他认证方式
+
+  // 示例：检查 localStorage 中的用户信息
+  const userToken = localStorage.getItem("user_token");
+  const userId = localStorage.getItem("user_id");
+
+  if (!userToken || !userId) {
+    return false;
+  }
+
+  // 可选：验证 token 是否有效
+  try {
+    // const response = await $fetch('/api/auth/verify', {
+    //   headers: { Authorization: `Bearer ${userToken}` }
+    // });
+    // return response.valid;
+
+    // 简化版本：假设 token 存在就是有效的
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+// 显示角色选择界面
+const showCharacterSelection = async (characters: Character[]) => {
+  // 这里可以显示角色选择界面
+  // 或者跳转到专门的角色选择页面
+  navigateTo("/game/character/select");
+};
 </script>

@@ -1,6 +1,6 @@
 import { GameManager } from "~~/core/managers/GameManager";
 
-export const useGame = defineStore("game", {
+export const useGameStore = defineStore("game", {
   state: () => ({
     gameManager: null as unknown as GameManager,
   }),
@@ -21,5 +21,5 @@ export const useGame = defineStore("game", {
 });
 
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useGame, import.meta.hot));
+  import.meta.hot.accept(acceptHMRUpdate(useGameStore, import.meta.hot));
 }
